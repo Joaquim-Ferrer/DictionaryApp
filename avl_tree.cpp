@@ -37,6 +37,35 @@ int insert_word(AVL_Node *&root, string word, string translation) {
             return 0;
         }
     }
+
+    //Go up the tree and correct the heights. If the height is changed then check
+    //if rebalance is needed. Notice that aux begins in the parent of the new node
+    while(aux != NULL) {
+        update_height(aux);
+        int balance = get_balance(aux);
+        if(balance == 2) {
+            if(get_balance(aux->son_right) == -1) {
+                rotate_right(aux->son_right);//Double rotation
+            }
+            rotate_left(aux);
+            if(aux == root) {
+                //Updates the root of the tree if it shifts
+                root = aux->parent;
+            }
+        }
+        else if(balance == -2) {
+            if(get_balance(aux->son_left) == 1) {
+                rotate_left(aux->son_left);//Double rotation
+            }
+            rotate_right(aux);
+            if(aux == root) {
+                //Updates the root of the tree if it shifts
+                root = aux->parent;
+            }
+        }
+        aux = aux->parent;
+    }
+    return 1;
 }
 
 /*
