@@ -30,9 +30,9 @@ int main() {
         else if(command_line == "LOAD") {
             //Loads several words
             load_dict(main_root);
-            cout << "LOADED!\n":
+            cout << "LOADED!\n";
         }
-        else if(command_line == "ADD") {
+        else if(command == "ADD") {
             //Adds a single word and translation passed as argument
             string word, translation;
 
@@ -52,7 +52,7 @@ int main() {
 
             word = arguments;
 
-            Node *word_node_ptr;
+            AVL_Node *word_node_ptr;
 
             word_node_ptr = search_node(main_root, word);
             if(word_node_ptr == NULL) {
@@ -65,7 +65,7 @@ int main() {
         else if(command == "TAG") {
             string word;
             word = arguments;
-            Node *word_node_ptr;
+            AVL_Node *word_node_ptr;
 
             word_node_ptr = search_node(main_root, word);
             if(word_node_ptr == NULL) {
