@@ -39,7 +39,31 @@ int insert_word(AVL_Node *&root, string word, string translation) {
     }
 }
 
-AVL_Node *new_node(string word, string translation, Node *parent) {
+/*
+**Searches for a word in the tree.
+**Returns NULL if the word is not found;
+**Returns the word's translation if the word is found
+*/
+AVL_Node *search_node(AVL_Node *root, string word) {
+    AVL_Node *aux = root;
+
+    while(aux != NULL) {
+        int comparison = word.compare(aux->word);
+        if(comparison < 0) {
+            aux = aux->son_left;    
+        }
+        else if(comparison > 0) {
+            aux = aux->son_right;
+        }
+        else {
+            return aux;
+        }
+    }
+
+    return NULL;
+}
+
+AVL_Node *new_node(string word, string translation, AVL_Node *parent) {
     Node_AVL *new_node = new Node_AVL;
     new_node->word = word;
     new_node->translation = translation;
