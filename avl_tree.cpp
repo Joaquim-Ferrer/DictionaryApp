@@ -1,3 +1,4 @@
+#include "header_avl.h"
 /*
 **Insert node in the binary tree whose root is root. The innsertion is made 
 to create an AVL binary tree.
