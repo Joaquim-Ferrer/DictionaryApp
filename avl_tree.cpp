@@ -207,3 +207,20 @@ int max(int a, int b) {
         return b;
     }
 }
+
+/*
+**As the name says prints the root and its descendents in order
+*/
+void print_node_and_descents_ordered(AVL_Node *root) {
+    if(root == NULL) {
+        return;
+    }
+
+    if(root->son_left != NULL) {
+        print_node_and_descents_ordered(root->son_left);
+    }
+    cout << root->word << "\n";
+    if(root->son_right != NULL) {
+        print_node_and_descents_ordered(root->son_right);
+    }
+}

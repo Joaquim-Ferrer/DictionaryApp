@@ -3,6 +3,7 @@
 
 using namespace std;
 
+#include <iostream>
 #include <string>
 
 struct AVL_Node {
@@ -61,5 +62,10 @@ int get_balance(AVL_Node *node);
 **Returns the biggest integer, a or b
 */
 int max(int a, int b);
+
+/*
+**prints all the nodes with root root in growing order(alphabetically)
+*/ 
+void print_node_and_descents_ordered(AVL_Node *root);
 
 #endif

@@ -3,9 +3,11 @@ using namespace std;
 #include "header_avl.h"
 #include <iostream>
 
+#define DEBUG 1
 #define END_LOAD_WORD "end$dictionary"
 
 void load_dict(AVL_Node *&root);
+void debug(AVL_Node *root);
 
 int main() {
     AVL_Node *main_root = NULL, *tagged_root = NULL;
@@ -78,6 +80,19 @@ int main() {
                 cout << word << " TAGGED" << endl;
             }
         }
+        else if(command == "LIST") {
+            print_node_and_descents_ordered(main_root);
+            cout << "END OF LIST" << endl;
+        }
+        else if(command == "TAGGED_LIST") {
+            print_node_and_descents_ordered(tagged_root);
+            cout << "END OF TAGGED LIST" << endl;
+        }
+        #ifdef DEBUG
+            else if(command == "DEBUG") {
+                debug(main_root);
+            }
+        #endif
     }
 }
 
@@ -96,4 +111,18 @@ void load_dict(AVL_Node *&root) {
         insert_word(root, word, translation);
     }
     cin.get();
+}
+
+void debug(AVL_Node *root) {
+    if(root == NULL) {
+        return;
+    }
+
+    if(root->son_left != NULL) {
+        debug(root->son_left);
+    }
+    cout << root->word << " " << root->height << "\n";
+    if(root->son_right != NULL) {
+        debug(root->son_right);
+    }
 }
