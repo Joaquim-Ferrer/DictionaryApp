@@ -79,6 +79,63 @@ AVL_Node *new_node(string word, string translation, AVL_Node *parent) {
 }
 
 /*
+**Rotates the subtree with root node to the right
+*/
+void rotate_right(AVL_Node *node) {
+    if(node->parent != NULL && node->parent->son_left == node) {
+        node->parent->son_left = node->son_left;
+    }
+    else if(node->parent != NULL && node->parent->son_right == node) {
+        node->parent->son_right = node->son_left;
+    }
+    node->son_left->parent = node->parent;
+    
+
+    AVL_Node *left_right_subtree = node->son_left->son_right;
+
+    node->son_left->son_right = node;
+    node->parent = node->son_left;
+    node->son_left = left_right_subtree;
+    if(left_right_subtree != NULL) {
+        left_right_subtree->parent = node;
+    }
+    //Update heights. Heights will be recalculated if its children change.
+    //The nodes whose children change are node and node->son_left(which is now
+    //node->parent)
+    update_height(node);
+    update_height(node->parent);
+
+}
+
+/*
+**Rotates the subtree with root node to the left
+*/
+void rotate_left(AVL_Node *node) {
+    if(node->parent != NULL && node->parent->son_right == node)
+    {
+        node->parent->son_right = node->son_right;
+    }
+    else if(node->parent != NULL && node->parent->son_left == node) {
+        node->parent->son_left = node->son_right;
+    }
+    node->son_right->parent = node->parent;
+
+    AVL_Node *right_left_subtree = node->son_right->son_left;
+
+    node->son_right->son_left = node;
+    node->parent = node->son_right;
+    node->son_right = right_left_subtree;
+    if(right_left_subtree != NULL) {
+        right_left_subtree->parent = node;
+    }
+    //Update heights. Heights will be recalculated if its children change.
+    //The nodes whose children change are node and node->son_right(which is now node->parent)
+    update_height(node);
+    update_height(node->parent);
+
+}
+
+/*
 **Updates the height of the node's presuming it's children heights are correct
 */
 void update_height(AVL_Node *node) {
