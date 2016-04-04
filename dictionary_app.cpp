@@ -28,9 +28,55 @@ int main() {
             break;
         }
         else if(command_line == "LOAD") {
+            //Loads several words
             load_dict(main_root);
-            cout << "LOADED!\n";
+            cout << "LOADED!\n":
+        }
+        else if(command_line == "ADD") {
+            //Adds a single word and translation passed as argument
+            string word, translation;
 
+            int delim_i = arguments.find_first_of(' ');
+            word = arguments.substr(0, delim_i);
+            translation = arguments.substr(delim_i + 1, arguments.length());
+
+            if( insert_word(main_root, word, translation) ) {
+                cout << "WORD ADDED!" << endl;
+            }
+            else {
+                cout << "WORD ALREADY EXISTS..." << endl;
+            }
+        }
+        else if(command == "SEARCH") {
+            string word;
+
+            word = arguments;
+
+            Node *word_node_ptr;
+
+            word_node_ptr = search_node(main_root, word);
+            if(word_node_ptr == NULL) {
+                cout << "THE WORD DOESNT EXIST..." << endl;
+            }
+            else {
+                cout << word << " " << word_node_ptr->translation << endl;
+            }
+        }
+        else if(command == "TAG") {
+            string word;
+            word = arguments;
+            Node *word_node_ptr;
+
+            word_node_ptr = search_node(main_root, word);
+            if(word_node_ptr == NULL) {
+                cout << "THE WORD DOESNT EXIST..." << endl;    
+            }
+            else {
+                word_node_ptr->tagged = true;
+                //Adds the word ti the binary tree of tagged words
+                insert_word(tagged_root, word, word_node_ptr->translation);
+                cout << word << " TAGGED" << endl;
+            }
         }
     }
 }
