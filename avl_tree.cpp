@@ -78,6 +78,9 @@ AVL_Node *new_node(string word, string translation, AVL_Node *parent) {
     return new_Node;
 }
 
+/*
+**Updates the height of the node's presuming it's children heights are correct
+*/
 void update_height(AVL_Node *node) {
     int height_right = 0;
     int height_left = 0;
@@ -90,6 +93,23 @@ void update_height(AVL_Node *node) {
     }
 
     node->height = max(height_right, height_left) + 1;
+}
+
+/*
+**Returns the balance factor of the Node node
+*/
+int get_balance(AVL_Node *node) {
+    int height_right = 0;
+    int height_left = 0;
+    
+    if(node->son_right != NULL) {
+        height_right = node->son_right->height;
+    }
+    if(node->son_left != NULL) {
+        height_left = node->son_left->height;
+    }
+
+    return height_right - height_left;
 }
 
 /*
