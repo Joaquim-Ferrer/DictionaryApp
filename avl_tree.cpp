@@ -6,20 +6,18 @@ to create an AVL binary tree.
 */
 int insert_word(AVL_Node *&root, string word, string translation) {
     if(root == NULL) {
-        Node *new_node = new_node(word, translation, NULL);
-        root = new_node;
+        root = new_node(word, translation, NULL);
         return 1;
     }
 
-    AVL_Node = root;
+    AVL_Node *aux = root;
 
     while(1) {
         int comparison = word.compare(aux->word);
         if(comparison < 0) {
             if(aux->son_left == NULL) {
                 //insert new node to the left of the subtree
-                AVL_Node *new_node = new_node(word, translation, aux);
-                aux->son_left = new_node;
+                aux->son_left = new_node(word, translation, aux);
                 break;
             }
             aux = aux->son_left;
@@ -27,8 +25,7 @@ int insert_word(AVL_Node *&root, string word, string translation) {
         else if(comparison > 0) {
             if(aux->son_right == NULL) {
                 //insert new node to the right of the subtree
-                AVL_Node *new_node = new_node(word, translation, aux); 
-                aux->son_right = new_node;
+                aux->son_right = new_node(word, translation, aux); 
                 break;
             }
             aux = aux->son_right;
@@ -94,18 +91,18 @@ AVL_Node *search_node(AVL_Node *root, string word) {
 }
 
 AVL_Node *new_node(string word, string translation, AVL_Node *parent) {
-    Node_AVL *new_node = new Node_AVL;
+    AVL_Node *new_node = new AVL_Node;
     new_node->word = word;
     new_node->translation = translation;
     
-    new_node->tagged->false;
+    new_node->tagged = false;
     new_node->height = 1;
 
     new_node->parent = parent;
     new_node->son_right = NULL;
     new_node->son_left = NULL;
 
-    return new_Node;
+    return new_node;
 }
 
 /*

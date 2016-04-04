@@ -1,12 +1,14 @@
 #ifndef HEADER_AVL
 #define HEADER_AVL
 
+using namespace std;
+
 #include <string>
 
 struct AVL_Node {
-    Node *parent; 
-    Node *son_left;  
-    Node *son_right;
+    AVL_Node *parent; 
+    AVL_Node *son_left;  
+    AVL_Node *son_right;
 
     string word;
     string translation;
