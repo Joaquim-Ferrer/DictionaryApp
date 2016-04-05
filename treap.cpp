@@ -80,7 +80,7 @@ void splay(Node *node) {
         
         Node *parent = node->parent;
         if(parent == NULL || parent->n_searches > node->n_searches ||
-        (parent->n_searches == node->n_searches)) {
+        (parent->n_searches == node->n_searches && parent->rand_priority > node->rand_priority)) {
             return;
         }
         
@@ -99,34 +99,28 @@ void splay(Node *node) {
             return;
         }
         
-        if(parent->n_searches <= node->n_searches &&
-        parent->rand_priority < node->rand_priority) {
-            if(g_parent->n_searches <= node->n_searches &&
-            g_parent->rand_priority < node->rand_priority) {
-            //ZIG ZIG OR ZIG ZAG STEP!! because node can go up two floors!
-                if(parent == g_parent->son_right) {
-                    if(parent->son_right == node) {
-                        //ZIG ZIG
-                        rotate_left(parent);
-                    }
-                    else {
-                        //ZIG ZAG
-                        rotate_right(parent);
-                    }
-                    rotate_left(g_parent);
-                }
-                else {
-                    if(parent->son_left == node) {
-                        //ZIG ZIG
-                        rotate_right(parent);
-                    }
-                    else {
-                        //ZIG ZAG
-                        rotate_left(parent);
-                    }
-                    rotate_right(g_parent);
-                }
+        //ZIG ZIG OR ZIG ZAG STEP!! because node can go up two floors!
+        if(parent == g_parent->son_right) {
+            if(parent->son_right == node) {
+                //ZIG ZIG
+                rotate_left(parent);
             }
+            else {
+                //ZIG ZAG
+                rotate_right(parent);
+            }
+            rotate_left(g_parent);
+        }
+        else {
+            if(parent->son_left == node) {
+                //ZIG ZIG
+                rotate_right(parent);
+            }
+            else {
+                //ZIG ZAG
+                rotate_left(parent);
+            }
+            rotate_right(g_parent);
         }
     }
 }
@@ -134,7 +128,7 @@ void splay(Node *node) {
 /*
 **Rotates the subtree with root node to the right
 */
-void rotate_right(AVL_Node *node) {
+void rotate_right(Node *node) {
     if(node->parent != NULL && node->parent->son_left == node) {
         node->parent->son_left = node->son_left;
     }
@@ -144,7 +138,7 @@ void rotate_right(AVL_Node *node) {
     node->son_left->parent = node->parent;
     
 
-    AVL_Node *left_right_subtree = node->son_left->son_right;
+    Node *left_right_subtree = node->son_left->son_right;
 
     node->son_left->son_right = node;
     node->parent = node->son_left;
@@ -163,7 +157,7 @@ void rotate_right(AVL_Node *node) {
 /*
 **Rotates the subtree with root node to the left
 */
-void rotate_left(AVL_Node *node) {
+void rotate_left(Node *node) {
     if(node->parent != NULL && node->parent->son_right == node)
     {
         node->parent->son_right = node->son_right;
@@ -173,7 +167,7 @@ void rotate_left(AVL_Node *node) {
     }
     node->son_right->parent = node->parent;
 
-    AVL_Node *right_left_subtree = node->son_right->son_left;
+    Node *right_left_subtree = node->son_right->son_left;
 
     node->son_right->son_left = node;
     node->parent = node->son_right;
