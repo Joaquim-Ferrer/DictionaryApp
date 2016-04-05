@@ -65,3 +65,125 @@ Node *new_node(string word, string translation, Node *parent) {
     new_node->rand_priority = pri_dist(gen);
     new_node->n_searches = 1;
 }
+
+/*
+**Makes the node node go up the tree through rotations until it's parent 
+**either has a bigger n_searches or a bigger priority
+*/
+void splay(Node *node) {
+    if(node == NULL) {
+        cout << "Can't splay NULL node" << endl;
+        return;
+    }
+    
+    while(1) {
+        
+        Node *parent = node->parent;
+        if(parent == NULL || parent->n_searches > node->n_searches ||
+        (parent->n_searches == node->n_searches)) {
+            return;
+        }
+        
+        Node *g_parent = parent->parent;
+        if(g_parent->n_searches > node->searches ||
+        (g_parent->n_searches == node->searches && g_parent->rand_priority > node->rand_priority) {
+            //Only one operation needs to be done.
+            if(parent->son_right == node) {
+                //ZIG
+                rotate_left(parent);
+            }
+            else {
+                //ZIG
+                rotate_right(parent);
+            }
+            return;
+        }
+        
+        if(parent->n_searches <= node->n_searches &&
+        parent->rand_priority < node->rand_priority) {
+            if(g_parent->n_searches <= node->n_searches &&
+            g_parent->rand_priority < node->rand_priority) {
+            //ZIG ZIG OR ZIG ZAG STEP!! because node can go up two floors!
+                if(parent == g_parent->son_right) {
+                    if(parent->son_right == node) {
+                        //ZIG ZIG
+                        rotate_left(parent);
+                    }
+                    else {
+                        //ZIG ZAG
+                        rotate_right(parent);
+                    }
+                    rotate_left(g_parent);
+                }
+                else {
+                    if(parent->son_left == node) {
+                        //ZIG ZIG
+                        rotate_right(parent);
+                    }
+                    else {
+                        //ZIG ZAG
+                        rotate_left(parent);
+                    }
+                    rotate_right(g_parent);
+                }
+            }
+        }
+    }
+}
+
+/*
+**Rotates the subtree with root node to the right
+*/
+void rotate_right(AVL_Node *node) {
+    if(node->parent != NULL && node->parent->son_left == node) {
+        node->parent->son_left = node->son_left;
+    }
+    else if(node->parent != NULL && node->parent->son_right == node) {
+        node->parent->son_right = node->son_left;
+    }
+    node->son_left->parent = node->parent;
+    
+
+    AVL_Node *left_right_subtree = node->son_left->son_right;
+
+    node->son_left->son_right = node;
+    node->parent = node->son_left;
+    node->son_left = left_right_subtree;
+    if(left_right_subtree != NULL) {
+        left_right_subtree->parent = node;
+    }
+    //Update heights. Heights will be recalculated if its children change.
+    //The nodes whose children change are node and node->son_left(which is now
+    //node->parent)
+    update_height(node);
+    update_height(node->parent);
+
+}
+
+/*
+**Rotates the subtree with root node to the left
+*/
+void rotate_left(AVL_Node *node) {
+    if(node->parent != NULL && node->parent->son_right == node)
+    {
+        node->parent->son_right = node->son_right;
+    }
+    else if(node->parent != NULL && node->parent->son_left == node) {
+        node->parent->son_left = node->son_right;
+    }
+    node->son_right->parent = node->parent;
+
+    AVL_Node *right_left_subtree = node->son_right->son_left;
+
+    node->son_right->son_left = node;
+    node->parent = node->son_right;
+    node->son_right = right_left_subtree;
+    if(right_left_subtree != NULL) {
+        right_left_subtree->parent = node;
+    }
+    //Update heights. Heights will be recalculated if its children change.
+    //The nodes whose children change are node and node->son_right(which is now node->parent)
+    update_height(node);
+    update_height(node->parent);
+
+}
