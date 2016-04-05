@@ -3,6 +3,9 @@
 
 using namespace std;
 
+#include <string>
+#include <random>
+
 namespace treap {
     struct Node {
         Node *parent;
