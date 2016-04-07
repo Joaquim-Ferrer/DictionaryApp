@@ -12,7 +12,7 @@ uniform_real_distribution<float> pri_dist (0.0,1.0);
 **bigger than ots left son and smaller than the right son. In addition, a son is always
 **less searched than a parent. 
 */ 
-int treap::insert_word(Node *&root, string word, string translation) {
+int insert_word(Node *&root, string word, string translation) {
     if(root == NULL) {
         root = new_node(word, translation, NULL);
         return 1;
@@ -179,5 +179,47 @@ void rotate_left(Node *node) {
     //The nodes whose children change are node and node->son_right(which is now node->parent)
     update_height(node);
     update_height(node->parent);
-
 }
+
+/*
+**Searches for a word in the tree.
+**Returns NULL if the word is not found;
+**Returns the word's translation if the word is found
+*/
+Node *search_node(Node *root, string word) {
+    Node *aux = root;
+
+    while(aux != NULL) {
+        int comparison = word.compare(aux->word);
+        if(comparison < 0) {
+            aux = aux->son_left;    
+        }
+        else if(comparison > 0) {
+            aux = aux->son_right;
+        }
+        else {
+            aux->n_searches++;
+            splay(aux);
+            return aux;
+        }
+    }
+    return NULL;
+}
+
+/*
+**As the name says prints the root and its descendents in order
+*/
+void print_node_and_descents_ordered(Node *root) {
+    if(root == NULL) {
+        return;
+    }
+
+    if(root->son_left != NULL) {
+        print_node_and_descents_ordered(root->son_left);
+    }
+    cout << root->word << "\n";
+    if(root->son_right != NULL) {
+        print_node_and_descents_ordered(root->son_right);
+    }
+}
+
