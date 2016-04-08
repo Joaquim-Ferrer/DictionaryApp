@@ -12,20 +12,21 @@ uniform_real_distribution<float> pri_dist (0.0,1.0);
 **bigger than ots left son and smaller than the right son. In addition, a son is always
 **less searched than a parent. 
 */ 
-int insert_word(Node *&root, string word, string translation) {
+int treap::insert_word(Node *&root, string word, string translation) {
     if(root == NULL) {
         root = new_node(word, translation, NULL);
         return 1;
     }
 
     Node *aux = root;
+    Node *node = NULL;
 
     while(1) {
         int comparison = word.compare(aux->word);
         if(comparison < 0) {
             if(aux->son_left == NULL) {
                 //Insert new node to the left of the subtree
-                Node *node = new_node(word, translation, aux);
+                node = new_node(word, translation, aux);
                 aux->son_left = node;
                 break;
             }
@@ -34,7 +35,7 @@ int insert_word(Node *&root, string word, string translation) {
         else if(comparison > 0) {
             if(aux->son_right == NULL) {
                 //Insert new node to the riht of the subtree
-                Node *node = new_node(word, translation, aux);
+                node = new_node(word, translation, aux);
                 aux->son_right = node;
                 break;
             }
@@ -52,7 +53,7 @@ int insert_word(Node *&root, string word, string translation) {
 }
 
 
-Node *new_node(string word, string translation, Node *parent) {
+Node *treap::new_node(string word, string translation, Node *parent) {
     Node *new_node = new Node;
     new_node->word = word;
     new_node->translation = translation;
@@ -70,7 +71,7 @@ Node *new_node(string word, string translation, Node *parent) {
 **Makes the node node go up the tree through rotations until it's parent 
 **either has a bigger n_searches or a bigger priority
 */
-void splay(Node *node) {
+void treap::splay(Node *node) {
     if(node == NULL) {
         cout << "Can't splay NULL node" << endl;
         return;
@@ -85,8 +86,8 @@ void splay(Node *node) {
         }
         
         Node *g_parent = parent->parent;
-        if(g_parent->n_searches > node->searches ||
-        (g_parent->n_searches == node->searches && g_parent->rand_priority > node->rand_priority) {
+        if(g_parent->n_searches > node->n_searches ||
+        (g_parent->n_searches == node->n_searches && g_parent->rand_priority > node->rand_priority)) {
             //Only one operation needs to be done.
             if(parent->son_right == node) {
                 //ZIG
@@ -128,7 +129,7 @@ void splay(Node *node) {
 /*
 **Rotates the subtree with root node to the right
 */
-void rotate_right(Node *node) {
+void treap::rotate_right(Node *node) {
     if(node->parent != NULL && node->parent->son_left == node) {
         node->parent->son_left = node->son_left;
     }
@@ -146,18 +147,12 @@ void rotate_right(Node *node) {
     if(left_right_subtree != NULL) {
         left_right_subtree->parent = node;
     }
-    //Update heights. Heights will be recalculated if its children change.
-    //The nodes whose children change are node and node->son_left(which is now
-    //node->parent)
-    update_height(node);
-    update_height(node->parent);
-
 }
 
 /*
 **Rotates the subtree with root node to the left
 */
-void rotate_left(Node *node) {
+void treap::rotate_left(Node *node) {
     if(node->parent != NULL && node->parent->son_right == node)
     {
         node->parent->son_right = node->son_right;
@@ -175,10 +170,6 @@ void rotate_left(Node *node) {
     if(right_left_subtree != NULL) {
         right_left_subtree->parent = node;
     }
-    //Update heights. Heights will be recalculated if its children change.
-    //The nodes whose children change are node and node->son_right(which is now node->parent)
-    update_height(node);
-    update_height(node->parent);
 }
 
 /*
@@ -186,7 +177,7 @@ void rotate_left(Node *node) {
 **Returns NULL if the word is not found;
 **Returns the word's translation if the word is found
 */
-Node *search_node(Node *root, string word) {
+Node *treap::search_node(Node *root, string word) {
     Node *aux = root;
 
     while(aux != NULL) {
@@ -209,7 +200,7 @@ Node *search_node(Node *root, string word) {
 /*
 **As the name says prints the root and its descendents in order
 */
-void print_node_and_descents_ordered(Node *root) {
+void treap::print_node_and_descents_ordered(Node *root) {
     if(root == NULL) {
         return;
     }

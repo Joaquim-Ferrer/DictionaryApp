@@ -1,7 +1,7 @@
 using namespace std;
 
 #include "header_avl.h"
-#include <iostream>
+#include "header_treap.h"
 
 #define DEBUG 1
 #define END_LOAD_WORD "end$dictionary"
@@ -11,6 +11,7 @@ void debug(AVL_Node *root);
 
 int main() {
     AVL_Node *main_root = NULL, *tagged_root = NULL;
+    treap::Node *searched_root;
     string command, arguments, command_line;
 
     while(1) {
