@@ -11,7 +11,7 @@ void debug(AVL_Node *root);
 
 int main() {
     AVL_Node *main_root = NULL, *tagged_root = NULL;
-    treap::Node *searched_root;
+    treap::Node *searched_root = NULL;
     string command, arguments, command_line;
 
     while(1) {
@@ -56,12 +56,21 @@ int main() {
             word = arguments;
 
             AVL_Node *word_node_ptr;
-
+            treap::Node *treap_node_ptr;
+            //Search in the already searched words
+            treap_node_ptr = treap::search_node(searched_root, word);
+            if(treap_node_ptr != NULL) {
+                cout << word << " " << treap_node_ptr->translation << endl;
+                continue;
+            }
+            
             word_node_ptr = search_node(main_root, word);
             if(word_node_ptr == NULL) {
                 cout << "THE WORD DOESNT EXIST..." << endl;
             }
             else {
+                //if it's found in the main tree add it to the searched tree
+                treap::insert_word(searched_root, word, word_node_ptr->translation);
                 cout << word << " " << word_node_ptr->translation << endl;
             }
         }
@@ -92,6 +101,8 @@ int main() {
         #ifdef DEBUG
             else if(command == "DEBUG") {
                 debug(main_root);
+                cout << "\nTreap: \n";
+                treap::print_node_and_descents_ordered(searched_root);
             }
         #endif
     }
@@ -122,7 +133,13 @@ void debug(AVL_Node *root) {
     if(root->son_left != NULL) {
         debug(root->son_left);
     }
-    cout << root->word << " " << root->height << "\n";
+    if(root->parent == NULL) {
+        cout << root->word << " " << root->height << "\n";
+    }
+    else {
+        cout << root->word << " " << root->height << " parent: "
+            << root->parent->word << "\n";
+    }
     if(root->son_right != NULL) {
         debug(root->son_right);
     }
