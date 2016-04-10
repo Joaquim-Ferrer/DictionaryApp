@@ -1,10 +1,13 @@
 #include "header_treap.h"
 using namespace treap;
 
+#define TEST 1
+
 //A random generator
 int seed = 1;
 default_random_engine gen (seed);
 uniform_real_distribution<float> pri_dist (0.0,1.0);
+
 
 /*
 **Inserts a node in the binary tree whose root is root. The insertion is made
@@ -65,6 +68,7 @@ Node *treap::new_node(string word, string translation, Node *parent) {
 
     new_node->rand_priority = pri_dist(gen);
     new_node->n_searches = 1;
+    return new_node;
 }
 
 /*
@@ -86,7 +90,9 @@ void treap::splay(Node *node) {
         }
         
         Node *g_parent = parent->parent;
-        if(g_parent->n_searches > node->n_searches ||
+
+        if(g_parent == NULL || 
+        g_parent->n_searches > node->n_searches ||
         (g_parent->n_searches == node->n_searches && g_parent->rand_priority > node->rand_priority)) {
             //Only one operation needs to be done.
             if(parent->son_right == node) {
@@ -177,7 +183,7 @@ void treap::rotate_left(Node *node) {
 **Returns NULL if the word is not found;
 **Returns the word's translation if the word is found
 */
-Node *treap::search_node(Node *root, string word) {
+Node *treap::search_node(Node *&root, string word) {
     Node *aux = root;
 
     while(aux != NULL) {
@@ -191,6 +197,10 @@ Node *treap::search_node(Node *root, string word) {
         else {
             aux->n_searches++;
             splay(aux);
+            if(aux->parent == NULL) {
+                //If it's the new root update the root
+                root = aux;
+            }
             return aux;
         }
     }
@@ -201,6 +211,7 @@ Node *treap::search_node(Node *root, string word) {
 **As the name says prints the root and its descendents in order
 */
 void treap::print_node_and_descents_ordered(Node *root) {
+    cout << 1 << endl;
     if(root == NULL) {
         return;
     }
@@ -208,9 +219,32 @@ void treap::print_node_and_descents_ordered(Node *root) {
     if(root->son_left != NULL) {
         print_node_and_descents_ordered(root->son_left);
     }
-    cout << root->word << "\n";
+    
+    if(root->parent == NULL) {
+        cout << root->word << " searches:" << root->n_searches << "\n";
+    }
+    else {
+        cout << root->word << " searches:" << root->n_searches << " parent: "
+            << root->parent->word << " randon:" << root->rand_priority << "\n";
+    }
+    
     if(root->son_right != NULL) {
         print_node_and_descents_ordered(root->son_right);
     }
 }
 
+#ifdef TEST
+int main() {
+    Node *w = new_node("w", "w", NULL);
+    Node *r = new_node("r", "r", w);
+    Node *root = w;
+
+    print_node_and_descents_ordered(root);
+    
+    rotate_right(w);
+
+    print_node_and_descents_ordered(r);
+
+    return 0;
+}
+#endif
