@@ -28,6 +28,7 @@ void rotate_right(Node *node);
 void rotate_left(Node *node);
 Node *search_node(Node *&root, string word);
 void print_node_and_descents_ordered(Node *root);
+void print_node(Node *node);
 
 }
 
