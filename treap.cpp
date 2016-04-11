@@ -1,7 +1,7 @@
 #include "header_treap.h"
 using namespace treap;
 
-#define TEST 1
+//#define TEST 1
 
 //A random generator
 int seed = 1;
@@ -52,6 +52,9 @@ int treap::insert_word(Node *&root, string word, string translation) {
     //The new node goes up the tree while its parent ha n_searches 1 and a 
     //rand_priority lower than his
     splay(node);
+    if(node->parent == NULL) {
+        root = node;
+    }
     return 1;
 }
 
@@ -211,7 +214,6 @@ Node *treap::search_node(Node *&root, string word) {
 **As the name says prints the root and its descendents in order
 */
 void treap::print_node_and_descents_ordered(Node *root) {
-    cout << 1 << endl;
     if(root == NULL) {
         return;
     }
@@ -221,7 +223,7 @@ void treap::print_node_and_descents_ordered(Node *root) {
     }
     
     if(root->parent == NULL) {
-        cout << root->word << " searches:" << root->n_searches << "\n";
+        cout << root->word << " searches:" << root->n_searches << " randon:" << root->rand_priority << "\n";
     }
     else {
         cout << root->word << " searches:" << root->n_searches << " parent: "
@@ -233,17 +235,17 @@ void treap::print_node_and_descents_ordered(Node *root) {
     }
 }
 
+void treap::print_node(Node *node) {
+    cout << node->word << endl;
+}
+
 #ifdef TEST
 int main() {
-    Node *w = new_node("w", "w", NULL);
-    Node *r = new_node("r", "r", w);
-    Node *root = w;
+    Node *root = NULL;
+    insert_word(root, "w", "w");
+    insert_word(root, "r", "r");
 
     print_node_and_descents_ordered(root);
-    
-    rotate_right(w);
-
-    print_node_and_descents_ordered(r);
 
     return 0;
 }
