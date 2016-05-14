@@ -1,10 +1,11 @@
-using namespace std;
-using namespace std::chrono;
-
 #include "header_avl.h"
 #include "header_treap.h"
 #include "header_heapsort.h"
 #include <chrono>
+#include <fstream>
+
+using namespace std;
+using namespace std::chrono;
 
 #define DEBUG 1
 #define END_LOAD_WORD "end$dictionary"
@@ -18,6 +19,12 @@ int main() {
     treap::Node *searched_root = NULL;
     string command, arguments, command_line;
     int n_searched_words = 0;
+    ofstream time_file, search_time_file;
+    time_file.open("Times.txt", ios::out | ios::app);
+    search_time_file.open("Search_time.txt", ios::out | ios::app);
+    bool searched = false;
+    high_resolution_clock::time_point beg_search, end_search;
+
 
     while(1) {
         getline(cin, command_line);
@@ -37,7 +44,10 @@ int main() {
         }
         else if(command_line == "LOAD") {
             //Loads several words
+            high_resolution_clock::time_point beg = high_resolution_clock::now();
             load_dict(main_root);
+            high_resolution_clock::time_point end = high_resolution_clock::now();
+            time_file << "LOAD:" << (duration_cast<microseconds>(end - beg).count()) << endl;
             cout << "LOADED!\n";
         }
         else if(command == "ADD") {
@@ -59,9 +69,24 @@ int main() {
             string word;
 
             word = arguments;
+            if(searched == false) {
+                beg_search = high_resolution_clock::now();
+                searched = true;
+            }
 
             AVL_Node *word_node_ptr;
             treap::Node *treap_node_ptr;
+            //Search in tagged words
+            word_node_ptr = search_node(tagged_root, word);
+            if(word_node_ptr != NULL) {
+                //if it's found in the main tree add it to the searched tree
+                int is_in_treap = treap::insert_word(searched_root, word, word_node_ptr->translation);
+                cout << word << " " << word_node_ptr->translation << endl;
+                if(is_in_treap != 0) {
+                   n_searched_words++;
+                }
+                continue;
+            }
             //Search in the already searched words
             treap_node_ptr = treap::search_node(searched_root, word);
             if(treap_node_ptr != NULL) {
@@ -97,7 +122,10 @@ int main() {
             }
         }
         else if(command == "LIST") {
+            high_resolution_clock::time_point beg = high_resolution_clock::now();            
             print_node_and_descents_ordered(main_root);
+            high_resolution_clock::time_point end = high_resolution_clock::now();
+            time_file << "LIST:" << (duration_cast<microseconds>(end - beg).count()) << endl;
             cout << "END OF LIST" << endl;
         }
         else if(command == "TAGGED_LIST") {
@@ -119,6 +147,10 @@ int main() {
             }
         #endif
     }
+    end_search = high_resolution_clock::now();
+    search_time_file << "LOAD:" << (duration_cast<microseconds>(end_search - beg_search).count()) << endl;
+    search_time_file.close();
+    time_file.close();
 }
 
 void load_dict(AVL_Node *&root) {
